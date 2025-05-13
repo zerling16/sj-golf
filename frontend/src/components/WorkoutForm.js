@@ -21,7 +21,7 @@ const WorkoutForm = ({ workout }) => {
     }
 
     const workout = { day, exercise, sets, reps };
-    const response = await fetch("/workouts/add", {
+    const response = await fetch(`${process.env.API_URL}/workouts/add`, {
       method: "POST",
       body: JSON.stringify(workout),
       headers: {
