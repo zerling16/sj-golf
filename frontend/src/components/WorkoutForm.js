@@ -15,35 +15,41 @@ const WorkoutForm = () => {
   const { user } = useAuthContext();
   const API_URL = process.env.REACT_APP_API_URL;
 
-  const handleUpload = async () => {
+  const handleUpload = async (e) => {
+    e.preventDefault();
+
+    if (!user) {
+      setError("You must be logged in");
+      return;
+    }
+
     if (!file) {
       setError("Please select a file first");
       return;
     }
 
     const base64 = await toBase64(file);
+    console.log("User ID being sent:", user._id); // Check if this prints the correct ID
 
     const response = await fetch(`${API_URL}/image/upload`, {
       method: "POST",
+      body: JSON.stringify({
+        image: base64,
+        description: description,
+      }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
-      body: JSON.stringify({
-        image: base64,
-        userId: user._id,
-        description: description,
-      }),
     });
 
-    const data = await response.json();
-    console.log("Uploaded URL:", data.url);
+    const json = await response.json();
+    console.log("Upload Response:", json);
 
-    if (!response.ok) {
-      setError("Image upload failed");
-    } else {
+    if (response.ok) {
       setError(null);
-      // Optionally store data.url in your form state
+    } else {
+      setError(json.error);
     }
   };
 
