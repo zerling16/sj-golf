@@ -5,17 +5,15 @@ import { useAuthContext } from "../hooks/useAuthContext";
 const WorkoutDetails = ({ workout }) => {
   const { dispatch } = useWorkoutsContext();
   const { user } = useAuthContext();
+  const API_URL = process.env.API_URL;
   const handleClick = async () => {
     if (!user) {
       return;
     }
-    const response = await fetch(
-      `${process.env.API_URL}/workouts/` + workout._id,
-      {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${user.token}` },
-      }
-    );
+    const response = await fetch(`${API_URL}/workouts/${workout._id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${user.token}` },
+    });
     const json = await response.json();
     if (response.ok) {
       dispatch({ type: "DELETE_WORKOUT", payload: json });

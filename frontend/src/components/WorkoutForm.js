@@ -11,6 +11,7 @@ const WorkoutForm = ({ workout }) => {
   const [error, setError] = useState("");
   const [emptyFields, setEmptyFields] = useState([]);
   const { user } = useAuthContext();
+  const API_URL = process.env.API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ const WorkoutForm = ({ workout }) => {
     }
 
     const workout = { day, exercise, sets, reps };
-    const response = await fetch(`${process.env.API_URL}/workouts/add`, {
+    const response = await fetch(`${API_URL}/workouts/add`, {
       method: "POST",
       body: JSON.stringify(workout),
       headers: {
