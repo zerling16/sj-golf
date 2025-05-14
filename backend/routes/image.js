@@ -1,5 +1,4 @@
 import express from "express";
-import cloudinary from "../utils/cloudinary.js";
 const router = express.Router();
 import { uploadImage } from "../controllers/golfController.js";
 import requireAuth from "../middleware/requireAuth.js";

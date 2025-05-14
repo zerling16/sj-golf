@@ -1,5 +1,6 @@
 import Golf from "../models/golf.js";
 import mongoose from "mongoose";
+import cloudinary from "../utils/cloudinary.js";
 
 export const uploadImage = async (req, res) => {
   const { image, userId, description } = req.body;
