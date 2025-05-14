@@ -9,12 +9,15 @@ export const useSignup = () => {
   const signup = async (email, password) => {
     setIsLoading(true);
     setError(null);
-    console.log(process.env.API_URL);
-    const response = await fetch(`${process.env.API_URL}/user/signup`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    console.log(process.env.REACT_APP_API_URL);
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/user/signup`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      }
+    );
 
     const json = await response.json();
 

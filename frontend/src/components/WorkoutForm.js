@@ -11,7 +11,7 @@ const WorkoutForm = ({ workout }) => {
   const [error, setError] = useState("");
   const [emptyFields, setEmptyFields] = useState([]);
   const { user } = useAuthContext();
-  const API_URL = process.env.API_URL;
+  const API_URL = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
