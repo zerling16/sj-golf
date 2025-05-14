@@ -2,34 +2,42 @@ import { useState } from "react";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-function ImageUploader({ userId }) {
-  const [file, setFile] = useState(null);
-
-  const handleUpload = async () => {
-    const base64 = await toBase64(file);
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/image/upload`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: base64, userId }),
-      }
-    );
-    const data = await response.json();
-    console.log("Uploaded URL:", data.url);
-  };
-}
-
-const WorkoutForm = ({ workout }) => {
+const WorkoutForm = () => {
   const { dispatch } = useWorkoutsContext();
   const [exercise, setExercise] = useState("");
   const [day, setDay] = useState("");
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
+  const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [emptyFields, setEmptyFields] = useState([]);
   const { user } = useAuthContext();
   const API_URL = process.env.REACT_APP_API_URL;
+
+  const handleUpload = async () => {
+    if (!file) {
+      setError("Please select a file first");
+      return;
+    }
+
+    const base64 = await toBase64(file);
+
+    const response = await fetch(`${API_URL}/image/upload`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: base64, userId: user.id }), // or user._id if that's your schema
+    });
+
+    const data = await response.json();
+    console.log("Uploaded URL:", data.url);
+
+    if (!response.ok) {
+      setError("Image upload failed");
+    } else {
+      setError(null);
+      // Optionally store data.url in your form state
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +48,7 @@ const WorkoutForm = ({ workout }) => {
     }
 
     const workout = { day, exercise, sets, reps };
+
     const response = await fetch(`${API_URL}/workouts/add`, {
       method: "POST",
       body: JSON.stringify(workout),
@@ -48,7 +57,9 @@ const WorkoutForm = ({ workout }) => {
         Authorization: `Bearer ${user.token}`,
       },
     });
+
     const json = await response.json();
+
     if (response.ok) {
       setError(null);
       setExercise("");
@@ -62,9 +73,11 @@ const WorkoutForm = ({ workout }) => {
       setEmptyFields(json.emptyFields);
     }
   };
+
   return (
     <form className="create" onSubmit={handleSubmit}>
       <h3>Add a new Workout</h3>
+
       <label>Exercise Name:</label>
       <input
         type="text"
@@ -72,6 +85,7 @@ const WorkoutForm = ({ workout }) => {
         value={exercise}
         className={emptyFields.includes("exercise") ? "error" : ""}
       />
+
       <label>Day:</label>
       <input
         type="text"
@@ -79,6 +93,7 @@ const WorkoutForm = ({ workout }) => {
         value={day}
         className={emptyFields.includes("day") ? "error" : ""}
       />
+
       <label>Sets:</label>
       <input
         type="number"
@@ -86,6 +101,7 @@ const WorkoutForm = ({ workout }) => {
         value={sets}
         className={emptyFields.includes("sets") ? "error" : ""}
       />
+
       <label>Reps:</label>
       <input
         type="number"
@@ -93,9 +109,13 @@ const WorkoutForm = ({ workout }) => {
         value={reps}
         className={emptyFields.includes("reps") ? "error" : ""}
       />
+
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button onClick={handleUpload}>Upload</button>
-      <button>Add Workout</button>
+      <button type="button" onClick={handleUpload}>
+        Upload Image
+      </button>
+      <button type="submit">Add Workout</button>
+
       {error && <div className="error">{error}</div>}
     </form>
   );
