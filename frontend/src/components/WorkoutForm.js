@@ -9,6 +9,7 @@ const WorkoutForm = () => {
   const [sets, setSets] = useState("");
   const [reps, setReps] = useState("");
   const [file, setFile] = useState(null);
+  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [emptyFields, setEmptyFields] = useState([]);
   const { user } = useAuthContext();
@@ -28,7 +29,11 @@ const WorkoutForm = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user.token}`,
       },
-      body: JSON.stringify({ image: base64, userId: user.id }),
+      body: JSON.stringify({
+        image: base64,
+        userId: user.id,
+        description: description,
+      }),
     });
 
     const data = await response.json();
@@ -114,6 +119,12 @@ const WorkoutForm = () => {
       />
 
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+      <label>Description:</label>
+      <input
+        type="text"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
       <button type="button" onClick={handleUpload}>
         Upload Image
       </button>
