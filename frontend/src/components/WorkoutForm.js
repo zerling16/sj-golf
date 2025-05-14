@@ -31,7 +31,7 @@ const WorkoutForm = () => {
       },
       body: JSON.stringify({
         image: base64,
-        userId: user.id,
+        userId: user._id,
         description: description,
       }),
     });
