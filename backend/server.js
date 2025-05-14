@@ -17,6 +17,7 @@ app.use(
 app.use(express.json());
 import workoutRoutes from "./routes/workout.js";
 import userRoutes from "./routes/user.js";
+import imageRoutes from "./routes/image.js";
 
 mongoose
   .connect(process.env.URI)
@@ -37,3 +38,5 @@ app.use((req, res, next) => {
 app.use("/workouts", workoutRoutes);
 
 app.use("/user", userRoutes);
+
+app.use("/image", imageRoutes);
