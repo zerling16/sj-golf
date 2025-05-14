@@ -1,13 +1,13 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
   addWorkout,
   getAllWorkouts,
   getOneWorkout,
   deleteWorkout,
   editWorkout,
-} = require("../controllers/workoutController");
-const requireAuth = require("../middleware/requireAuth");
+} from "../controllers/workoutController.js";
+import requireAuth from "../middleware/requireAuth.js";
 
 router.use(requireAuth);
 
@@ -25,4 +25,4 @@ router.delete("/:id", deleteWorkout);
 
 router.patch("/:id", editWorkout);
 
-module.exports = router;
+export default router;

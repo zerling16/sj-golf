@@ -1,11 +1,11 @@
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
+import User from "../models/user.js";
+import jwt from "jsonwebtoken";
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -17,7 +17,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const signUpUser = async (req, res) => {
+export const signUpUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -29,5 +29,3 @@ const signUpUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-module.exports = { loginUser, signUpUser };

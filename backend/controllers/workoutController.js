@@ -1,7 +1,7 @@
-const Workout = require("../models/workout");
-const mongoose = require("mongoose");
+import Workout from "../models/workout.js";
+import mongoose from "mongoose";
 
-const addWorkout = async (req, res) => {
+export const addWorkout = async (req, res) => {
   const { day, exercise, sets, reps } = req.body;
 
   let emptyFields = [];
@@ -39,7 +39,7 @@ const addWorkout = async (req, res) => {
   }
 };
 
-const getAllWorkouts = async (req, res) => {
+export const getAllWorkouts = async (req, res) => {
   try {
     const user_id = req.user._id;
     const workouts = await Workout.find({ user_id }).sort({ createdAt: -1 });
@@ -49,7 +49,7 @@ const getAllWorkouts = async (req, res) => {
   }
 };
 
-const getOneWorkout = async (req, res) => {
+export const getOneWorkout = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json("Invalid ID");
@@ -63,7 +63,7 @@ const getOneWorkout = async (req, res) => {
   }
 };
 
-const deleteWorkout = async (req, res) => {
+export const deleteWorkout = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json("Invalid ID");
@@ -78,7 +78,7 @@ const deleteWorkout = async (req, res) => {
   }
 };
 
-const editWorkout = async (req, res) => {
+export const editWorkout = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json("Invalid ID");
@@ -96,12 +96,4 @@ const editWorkout = async (req, res) => {
   } else {
     res.status(400).json({ error: "No such workout" });
   }
-};
-
-module.exports = {
-  addWorkout,
-  getAllWorkouts,
-  getOneWorkout,
-  deleteWorkout,
-  editWorkout,
 };

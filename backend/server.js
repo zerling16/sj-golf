@@ -1,20 +1,22 @@
-const express = require("express");
-require("dotenv").config();
-const mongoose = require("mongoose");
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+import mongoose from "mongoose";
 import cors from "cors";
+
+const app = express();
 
 app.use(
   cors({
-    origin: "https://sj-golf.vercel.app", // Replace with your Vercel frontend URL
+    origin: "https://sj-golf.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-const app = express();
 app.use(express.json());
-const workoutRoutes = require("./routes/workout");
-const userRoutes = require("./routes/user");
+import workoutRoutes from "./routes/workout.js";
+import userRoutes from "./routes/user.js";
 
 mongoose
   .connect(process.env.URI)
