@@ -7,4 +7,5 @@ const golfSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model("Golf", golfSchema);
+const Golf = mongoose.model("Golf", golfSchema);
+export default Golf;

@@ -24,8 +24,11 @@ const WorkoutForm = () => {
 
     const response = await fetch(`${API_URL}/image/upload`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ image: base64, userId: user.id }), // or user._id if that's your schema
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+      body: JSON.stringify({ image: base64, userId: user.id }),
     });
 
     const data = await response.json();

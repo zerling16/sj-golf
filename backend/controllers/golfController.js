@@ -14,7 +14,7 @@ export const uploadImage = async (req, res) => {
       description,
       imageUrl: result.secure_url,
     });
-    res.status(200).json(workout);
+    res.status(200).json(golf);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Upload failed" });
