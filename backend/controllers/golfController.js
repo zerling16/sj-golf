@@ -35,9 +35,9 @@ export const uploadImage = async (req, res) => {
 
     console.log("Golf document created:", golf);
 
-    return res.status(200).json(golf); // ✅ Always return here
+    return res.status(200).json(golf);
   } catch (error) {
-    console.error("Upload failed:", error.message); // ✅ Log the actual error
+    console.error("Upload failed:", error.message);
     return res
       .status(400)
       .json({ error: "Upload failed", details: error.message });
