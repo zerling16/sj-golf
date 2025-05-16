@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import Post from "../models/post.js";
+import User from "../models/user.js";
 
 // Make sure dotenv is loaded before this file runs
 
@@ -42,5 +43,34 @@ export const getPosts = async (req, res) => {
     res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch posts" });
+  }
+};
+
+export const addComment = async (req, res) => {
+  const { text, postId } = req.body;
+  const userId = req.user._id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    const comment = {
+      user_id: userId,
+      userName: user.name,
+      userProfileImageUrl: user.profileImageUrl,
+      text,
+    };
+
+    post.comments.push(comment);
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to add comment" });
   }
 };

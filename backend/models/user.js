@@ -12,6 +12,23 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    default: "",
+  },
+  handicap: {
+    type: Number,
+    default: 0,
+  },
+  profileImageUrl: {
+    type: String,
+    default: "",
+  },
+  teamId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Team",
+    default: null,
+  },
 });
 
 // static sign up

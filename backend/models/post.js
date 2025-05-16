@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
 
+const commentSchema = new mongoose.Schema({
+  user_id: { type: String, required: true },
+  userName: { type: String, required: true },
+  userProfileImageUrl: { type: String, required: true },
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
 const postSchema = new mongoose.Schema({
   user_id: {
     type: String,
@@ -10,6 +18,7 @@ const postSchema = new mongoose.Schema({
   score: { type: String, required: true },
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
+  comments: [commentSchema],
   createdAt: { type: Date, default: Date.now },
 });
 

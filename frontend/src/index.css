@@ -140,3 +140,36 @@ form.login {
   background: #fff;
   border-radius: 4px;
 }
+
+.post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-card {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+}
+
+/* Bottom Navbar Styles */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #333;
+}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
@@ -16,6 +17,7 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Navbar />
+          <BottomNav />
           <div className="pages">
             <Routes>
               <Route
