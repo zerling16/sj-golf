@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
+import TournamentManager from "../components/TournamentManager";
 
 function ProfilePage() {
-  const { user } = useAuthContext();
+  const { user, dispatch } = useAuthContext();
   const API_URL = process.env.REACT_APP_API_URL;
 
   const [profileData, setProfileData] = useState(null);
@@ -74,6 +75,9 @@ function ProfilePage() {
     if (!response.ok) {
       setError(data.error || "Update failed");
     } else {
+      const updatedUser = { ...user, ...data };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      dispatch({ type: "LOGIN", payload: updatedUser });
       setProfileData(data);
       setEditMode(false);
       setError("");
@@ -121,6 +125,7 @@ function ProfilePage() {
           </button>
         </form>
       )}
+      <TournamentManager />
     </div>
   );
 }

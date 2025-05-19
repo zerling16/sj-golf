@@ -29,6 +29,13 @@ const userSchema = new Schema({
     ref: "Team",
     default: null,
   },
+  tournamentId: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tournament",
+      default: null,
+    },
+  ],
 });
 
 // static sign up
