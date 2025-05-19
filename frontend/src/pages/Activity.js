@@ -29,7 +29,7 @@ const Activity = () => {
   }, [API_URL, user]);
 
   return (
-    <div>
+    <div className="wrapper">
       {error && <div className="error">{error}</div>}
       <div className="post-container">
         <h2>Activity Feed</h2>

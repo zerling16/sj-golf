@@ -87,44 +87,46 @@ function ProfilePage() {
   if (!profileData) return <p>Loading profile...</p>;
 
   return (
-    <div>
-      <h2>My Profile</h2>
+    <div className="wrapper">
+      <div className="tournament-manager">
+        <h2>My Profile</h2>
 
-      {error && <div className="error">{error}</div>}
+        {error && <div className="error">{error}</div>}
 
-      {!editMode ? (
-        <>
-          <p>
-            <strong>Name:</strong> {profileData.name}
-          </p>
-          <p>
-            <strong>Handicap:</strong> {profileData.handicap}
-          </p>
-          <img src={profileData.profileImageUrl} alt="Profile" width="150" />
-          <br />
-          <button onClick={() => setEditMode(true)}>Edit Profile</button>
-        </>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <label>Name:</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+        {!editMode ? (
+          <>
+            <p>
+              <strong>Name:</strong> {profileData.name}
+            </p>
+            <p>
+              <strong>Handicap:</strong> {profileData.handicap}
+            </p>
+            <img src={profileData.profileImageUrl} alt="Profile" width="150" />
+            <br />
+            <button onClick={() => setEditMode(true)}>Edit Profile</button>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <label>Name:</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} />
 
-          <label>Handicap:</label>
-          <input
-            type="number"
-            value={handicap}
-            onChange={(e) => setHandicap(Number(e.target.value))}
-          />
+            <label>Handicap:</label>
+            <input
+              type="number"
+              value={handicap}
+              onChange={(e) => setHandicap(Number(e.target.value))}
+            />
 
-          <label>Profile Picture:</label>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+            <label>Profile Picture:</label>
+            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
-          <button type="submit">Save</button>
-          <button type="button" onClick={() => setEditMode(false)}>
-            Cancel
-          </button>
-        </form>
-      )}
+            <button type="submit">Save</button>
+            <button type="button" onClick={() => setEditMode(false)}>
+              Cancel
+            </button>
+          </form>
+        )}
+      </div>
       <TournamentManager />
     </div>
   );

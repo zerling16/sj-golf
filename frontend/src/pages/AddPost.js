@@ -61,31 +61,33 @@ function AddPost() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="create">
-      <h3>Add Match Post</h3>
+    <div className="wrapper">
+      <form onSubmit={handleSubmit} className="create">
+        <h3>Add Match Post</h3>
 
-      <label>Team One:</label>
-      <input value={teamOne} onChange={(e) => setTeamOne(e.target.value)} />
+        <label>Team One:</label>
+        <input value={teamOne} onChange={(e) => setTeamOne(e.target.value)} />
 
-      <label>Team Two:</label>
-      <input value={teamTwo} onChange={(e) => setTeamTwo(e.target.value)} />
+        <label>Team Two:</label>
+        <input value={teamTwo} onChange={(e) => setTeamTwo(e.target.value)} />
 
-      <label>Final Score:</label>
-      <input value={score} onChange={(e) => setScore(e.target.value)} />
+        <label>Final Score:</label>
+        <input value={score} onChange={(e) => setScore(e.target.value)} />
 
-      <label>Match Description:</label>
-      <input
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+        <label>Match Description:</label>
+        <input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-      <label>Upload Image:</label>
-      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+        <label>Upload Image:</label>
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
-      <button type="submit">Submit Post</button>
+        <button type="submit">Submit Post</button>
 
-      {error && <div className="error">{error}</div>}
-    </form>
+        {error && <div className="error">{error}</div>}
+      </form>
+    </div>
   );
 }
 
