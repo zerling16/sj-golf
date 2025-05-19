@@ -57,3 +57,14 @@ export const joinTournament = async (req, res) => {
 
   res.status(200).json(tournament);
 };
+
+export const getStandings = async (req, res) => {
+  const userId = req.user._id;
+  console.log("hello");
+  try {
+    const tournaments = await Tournament.find({ players: userId });
+    res.status(200).json(tournaments);
+  } catch (error) {
+    res.error(401).json(error);
+  }
+};
