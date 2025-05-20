@@ -20,9 +20,9 @@ app.options("*", cors());
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
-import workoutRoutes from "./routes/workout.js";
+
 import userRoutes from "./routes/user.js";
-import imageRoutes from "./routes/image.js";
+import postRoutes from "./routes/post.js";
 import tournamentRoutes from "./routes/tournament.js";
 
 mongoose
@@ -41,10 +41,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/workouts", workoutRoutes);
-
 app.use("/user", userRoutes);
 
-app.use("/image", imageRoutes);
+app.use("/post", postRoutes);
 
 app.use("/tournament", tournamentRoutes);

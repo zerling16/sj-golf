@@ -13,6 +13,7 @@ const StandingsPage = () => {
       });
       const data = await response.json();
       if (response.ok) setTournaments(data);
+      console.log(data);
     };
 
     fetchStandings();
@@ -20,9 +21,9 @@ const StandingsPage = () => {
 
   return (
     <div className="standings-page">
-      {tournaments.map((t) => (
-        <div key={t._id} className="tournament-table">
-          <h3>{t.name}</h3>
+      {tournaments.map((tournament) => (
+        <div key={tournament.tournamentId} className="tournament-table">
+          <h3>{tournament.tournamentName}</h3>
           <table>
             <thead>
               <tr>
@@ -33,12 +34,12 @@ const StandingsPage = () => {
               </tr>
             </thead>
             <tbody>
-              {t.teams.map((team, index) => (
-                <tr key={index}>
-                  <td>{team.name}</td>
+              {tournament.standings.map((team) => (
+                <tr key={team.teamId}>
+                  <td>{team.teamName}</td>
                   <td>{team.wins}</td>
                   <td>{team.losses}</td>
-                  <td>{team.averageScore}</td>
+                  <td>{team.averageScore || "N/A"}</td>
                 </tr>
               ))}
             </tbody>

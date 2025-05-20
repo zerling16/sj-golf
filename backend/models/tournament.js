@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const tournamentSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
-  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  teamsNumer: { type: Number, default: 0 },
-  teams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
   description: { type: String },
+  numTeams: { type: Number },
+  teams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Team" }],
+  players: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   createdAt: { type: Date, default: Date.now },
 });
 

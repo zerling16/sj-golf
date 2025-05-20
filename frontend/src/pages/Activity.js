@@ -11,7 +11,7 @@ const Activity = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${API_URL}/image/getPosts`, {
+        const response = await fetch(`${API_URL}/post/getPosts`, {
           headers: { Authorization: `Bearer ${user.token}` },
         });
         const data = await response.json();

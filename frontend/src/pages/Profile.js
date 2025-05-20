@@ -112,7 +112,6 @@ function ProfilePage() {
 
             <label>Handicap:</label>
             <input
-              type="number"
               value={handicap}
               onChange={(e) => setHandicap(Number(e.target.value))}
             />

@@ -10,7 +10,7 @@ function CommentForm({ postId, onCommentAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${API_URL}/image/addComment`, {
+    const response = await fetch(`${API_URL}/post/addComment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

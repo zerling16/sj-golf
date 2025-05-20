@@ -11,9 +11,12 @@ function PostCard({ initialPost }) {
   return (
     <div className="post-card">
       <h3>
-        {post.teamOne} vs {post.teamTwo}
+        {post.teamOneName} VS {post.teamTwoName}
       </h3>
-      <p>Final Score: {post.score}</p>
+      <p> {post.tournamentName}</p>
+      <p>
+        Final Score: {post.score1} - {post.score2}
+      </p>
       <p>{post.description}</p>
       <img src={post.imageUrl} alt="Match" style={{ width: "300px" }} />
 

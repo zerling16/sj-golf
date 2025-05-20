@@ -5,7 +5,18 @@ import User from "../models/user.js";
 // Make sure dotenv is loaded before this file runs
 
 export const newPost = async (req, res) => {
-  const { teamOne, teamTwo, score, description, image } = req.body;
+  const {
+    tournamentId,
+    tournamentName,
+    teamOne,
+    teamOneName,
+    teamTwo,
+    teamTwoName,
+    score1,
+    score2,
+    description,
+    image,
+  } = req.body;
   const user_id = req.user._id;
 
   cloudinary.config({
@@ -21,9 +32,14 @@ export const newPost = async (req, res) => {
 
     const post = await Post.create({
       user_id,
+      tournamentId,
+      tournamentName,
       teamOne,
+      teamOneName,
       teamTwo,
-      score,
+      teamTwoName,
+      score1,
+      score2,
       description,
       imageUrl: result.secure_url,
     });
