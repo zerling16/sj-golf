@@ -30,7 +30,7 @@ function AddPost() {
 
   useEffect(() => {
     fetchTournaments();
-  });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

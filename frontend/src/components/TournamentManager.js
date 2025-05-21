@@ -13,6 +13,10 @@ function TournamentManager() {
   const [joinName, setJoinName] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState("");
 
+  const [editTeamName, setEditTeamName] = useState("");
+  const [editTeamImage, setEditTeamImage] = useState(null);
+  const [errors, setErrors] = useState("");
+  const [editingTeamId, setEditingTeamId] = useState(null);
   const [createData, setCreateData] = useState({
     name: "",
     teamName: "",
@@ -30,7 +34,7 @@ function TournamentManager() {
 
   useEffect(() => {
     fetchTournaments();
-  });
+  }, []);
 
   const handleCreate = async () => {
     const res = await fetch(`${API_URL}/tournament/create`, {
@@ -58,33 +62,174 @@ function TournamentManager() {
     }
   };
 
+  const handleTeamUpdate = async (e, teamId, tIndex, teamIndex) => {
+    e.preventDefault();
+
+    if (!user) {
+      setErrors("You must be logged in");
+      return;
+    }
+
+    let base64 = null;
+    if (editTeamImage) {
+      base64 = await toBase64(editTeamImage);
+    }
+
+    const updateBody = {
+      teamId,
+      teamName: editTeamName,
+    };
+    if (base64) {
+      updateBody.image = base64;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/tournament/update/${teamId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: JSON.stringify(updateBody),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors(data.error || "Update failed");
+      } else {
+        setErrors("");
+        setEditTeamName("");
+        setEditTeamImage(null);
+        setEditingTeamId(null);
+        setMyTournaments((prev) => {
+          const updated = [...prev];
+          updated[tIndex].teams[teamIndex] = {
+            ...updated[tIndex].teams[teamIndex],
+            teamName: data.teamName,
+            teamImageUrl:
+              data.teamImageUrl ||
+              updated[tIndex].teams[teamIndex].teamImageUrl,
+          };
+          return updated;
+        });
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+      setErrors("Something went wrong.");
+    }
+  };
+
   return (
     <div className="tournament-manager">
       <h3>My Tournaments</h3>
       {myTournaments.length > 0 ? (
         <ul>
-          {myTournaments.map((t) => (
-            <li key={t._id}>
+          {myTournaments.map((tournament, tIndex) => (
+            <li key={tournament._id}>
               <details>
-                <summary>{t.name}</summary>
+                <summary>{tournament.name}</summary>
                 <ul>
-                  {t.teams && t.teams.length > 0 ? (
-                    t.teams.map((team) => (
-                      <li key={team._id}>
-                        <strong>{team.teamName}</strong>
-                        <ul>
-                          {team.players && team.players.length > 0 ? (
-                            team.players.map((player) => (
-                              <li key={player._id}>
-                                {player.name || player.email}
-                              </li>
-                            ))
-                          ) : (
-                            <li>No players yet</li>
+                  {tournament.teams && tournament.teams.length > 0 ? (
+                    tournament.teams.map((team, teamIndex) => {
+                      const isUserTeam = team.players.some(
+                        (player) => player._id === user._id
+                      );
+
+                      return (
+                        <li
+                          key={team._id}
+                          style={{
+                            backgroundColor: isUserTeam
+                              ? "#ffff9e"
+                              : "transparent",
+                            borderRadius: "6px",
+                            padding: "8px",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          {team.teamImageUrl && (
+                            <img
+                              src={team.teamImageUrl}
+                              alt={`${team.teamName} logo`}
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                marginRight: "8px",
+                              }}
+                            />
                           )}
-                        </ul>
-                      </li>
-                    ))
+
+                          <strong>{team.teamName}</strong>
+
+                          <ul>
+                            {team.players && team.players.length > 0 ? (
+                              team.players.map((player) => (
+                                <li key={player._id}>
+                                  {player.name || player.email}
+                                </li>
+                              ))
+                            ) : (
+                              <li>No players yet</li>
+                            )}
+                          </ul>
+
+                          {isUserTeam && (
+                            <div style={{ marginTop: "8px" }}>
+                              {editingTeamId === team._id ? (
+                                <form
+                                  onSubmit={(e) =>
+                                    handleTeamUpdate(
+                                      e,
+                                      team._id,
+                                      tIndex,
+                                      teamIndex
+                                    )
+                                  }
+                                >
+                                  <input
+                                    type="text"
+                                    value={editTeamName}
+                                    onChange={(e) =>
+                                      setEditTeamName(e.target.value)
+                                    }
+                                    placeholder="Edit Team Name"
+                                  />
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) =>
+                                      setEditTeamImage(e.target.files[0])
+                                    }
+                                  />
+                                  <button type="submit">Save Changes</button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingTeamId(null)}
+                                  >
+                                    Cancel
+                                  </button>
+                                </form>
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    setEditingTeamId(team._id);
+                                    setEditTeamName(team.teamName); // preload current name
+                                    setEditTeamImage(null);
+                                  }}
+                                >
+                                  Edit
+                                </button>
+                              )}
+                              {error && editingTeamId === team._id && (
+                                <p style={{ color: "red" }}>{error}</p>
+                              )}
+                            </div>
+                          )}
+                        </li>
+                      );
+                    })
                   ) : (
                     <li>No teams found</li>
                   )}
@@ -194,6 +339,15 @@ function TournamentManager() {
       )}
     </div>
   );
+}
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
 }
 
 export default TournamentManager;

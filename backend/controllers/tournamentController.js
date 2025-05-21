@@ -2,6 +2,8 @@ import Tournament from "../models/tournament.js";
 import User from "../models/user.js";
 import Team from "../models/team.js";
 import Post from "../models/post.js";
+import { v2 as cloudinary } from "cloudinary";
+import mongoose from "mongoose";
 
 export const createTournament = async (req, res) => {
   const { name, description, numTeams, teamNames } = req.body;
@@ -99,11 +101,57 @@ export const findTournamentTeams = async (req, res) => {
   }
 };
 
+export const updateTeam = async (req, res) => {
+  const userId = req.user._id;
+  const { teamId, teamName, image } = req.body;
+
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+  try {
+    const updateData = { teamName };
+
+    if (image) {
+      const result = await cloudinary.uploader.upload(image, {
+        folder: `golf-app/${userId}`,
+      });
+      updateData.teamImageUrl = result.secure_url;
+    }
+
+    const updatedTeam = await Team.findByIdAndUpdate(teamId, updateData, {
+      new: true,
+    });
+
+    if (!updatedTeam) {
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    const objectTeamId = new mongoose.Types.ObjectId(teamId);
+
+    const updateOne = await Post.updateMany(
+      { teamOne: objectTeamId },
+      { $set: { teamOneName: teamName } }
+    );
+
+    const updateTwo = await Post.updateMany(
+      { teamTwo: objectTeamId },
+      { $set: { teamTwoName: teamName } }
+    );
+
+    res.status(200).json(updatedTeam);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update team" });
+  }
+};
+
 export const getStandings = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    // Step 1: Get all tournaments the user is in
     const tournaments = await Tournament.find({ players: userId }).populate({
       path: "teams",
       model: "Team",
@@ -111,7 +159,6 @@ export const getStandings = async (req, res) => {
 
     const results = [];
 
-    // Step 2: For each tournament, gather post data and compute standings
     for (const tournament of tournaments) {
       const posts = await Post.find({ tournamentId: tournament._id });
 
@@ -124,36 +171,52 @@ export const getStandings = async (req, res) => {
           teamName: team.teamName,
           wins: 0,
           losses: 0,
+          totalScore: 0,
+          gamesPlayed: 0,
         };
       });
 
-      // Step 3: Count wins/losses from posts
+      // Count wins/losses and accumulate scores
       posts.forEach((post) => {
         const { teamOne, teamTwo, score1, score2 } = post;
 
+        // Wins/Losses
         if (score1 < score2) {
-          if (standings[teamOne]) {
-            standings[teamOne].wins += 1;
-          }
-          if (standings[teamTwo]) {
-            standings[teamTwo].losses += 1;
-          }
+          if (standings[teamOne]) standings[teamOne].wins += 1;
+          if (standings[teamTwo]) standings[teamTwo].losses += 1;
         } else {
-          if (standings[teamOne]) {
-            standings[teamOne].losses += 1;
-          }
-          if (standings[teamTwo]) {
-            standings[teamTwo].wins += 1;
-          }
+          if (standings[teamOne]) standings[teamOne].losses += 1;
+          if (standings[teamTwo]) standings[teamTwo].wins += 1;
         }
+
+        // Score and game count
+        if (standings[teamOne]) {
+          standings[teamOne].totalScore += score1;
+          standings[teamOne].gamesPlayed += 1;
+        }
+        if (standings[teamTwo]) {
+          standings[teamTwo].totalScore += score2;
+          standings[teamTwo].gamesPlayed += 1;
+        }
+      });
+
+      // Finalize average score
+      Object.values(standings).forEach((teamStats) => {
+        teamStats.averageScore =
+          teamStats.gamesPlayed > 0
+            ? (teamStats.totalScore / teamStats.gamesPlayed).toFixed(2)
+            : "N/A";
+        delete teamStats.totalScore;
+        delete teamStats.gamesPlayed;
       });
 
       results.push({
         tournamentId: tournament._id,
         tournamentName: tournament.name,
-        standings: Object.values(standings), // convert from map to array
+        standings: Object.values(standings),
       });
     }
+
     res.status(200).json(results);
   } catch (error) {
     console.error(error);

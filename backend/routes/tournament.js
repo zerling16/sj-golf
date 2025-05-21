@@ -7,6 +7,7 @@ import {
   createTournament,
   getStandings,
   findTournamentTeams,
+  updateTeam,
 } from "../controllers/tournamentController.js";
 import requireAuth from "../middleware/requireAuth.js";
 
@@ -19,5 +20,7 @@ router.post("/create", requireAuth, createTournament);
 router.get("/standings", requireAuth, getStandings);
 
 router.get("/find/:name", requireAuth, findTournamentTeams);
+
+router.patch("/update/:id", requireAuth, updateTeam);
 
 export default router;
